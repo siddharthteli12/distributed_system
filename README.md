@@ -1,2 +1,2 @@
 # distributed_system
-Learning distributed system hands
+Learning distributed system hands.
