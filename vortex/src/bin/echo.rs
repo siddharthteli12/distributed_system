@@ -1,22 +1,8 @@
 use std::io::{StdoutLock, Write};
 
-use anyhow::{bail, Context};
+use anyhow::{bail, Context, Ok};
 use serde::{Deserialize, Serialize};
 use vortex::*;
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-struct Message {
-    src: String,
-    dest: String,
-    body: Body,
-}
-#[derive(Serialize, Deserialize, Clone, Debug)]
-struct Body {
-    msg_id: Option<usize>,
-    in_reply_to: Option<usize>,
-    #[serde(flatten)]
-    payload: Payload,
-}
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(tag = "type")]
@@ -39,8 +25,8 @@ struct EchoNode {
     id: usize,
 }
 
-impl EchoNode {
-    pub fn step(&mut self, input: Message, output: &mut StdoutLock) -> anyhow::Result<()> {
+impl Node<Payload> for EchoNode {
+    fn step(&mut self, input: Message<Payload>, output: &mut StdoutLock) -> anyhow::Result<()> {
         match input.body.payload {
             Payload::Echo { echo } => {
                 let reply = Message {
@@ -82,14 +68,5 @@ impl EchoNode {
 }
 
 fn main() -> anyhow::Result<()> {
-    let stdin = std::io::stdin().lock();
-    let mut stdout = std::io::stdout().lock();
-    let inputs = serde_json::Deserializer::from_reader(stdin).into_iter::<Message>();
-    let mut node = EchoNode { id: 0 };
-    for input in inputs {
-        let input = input.context("Issue in maelstrom input")?;
-        node.step(input, &mut stdout)
-            .context("step method failed")?;
-    }
-    Ok(())
+    main_loop(EchoNode { id: 0 })
 }
