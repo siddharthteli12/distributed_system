@@ -2,6 +2,7 @@ use std::io::{StdoutLock, Write};
 
 use anyhow::{bail, Context};
 use serde::{Deserialize, Serialize};
+use vortex::*;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 struct Message {
