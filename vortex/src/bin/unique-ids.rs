@@ -76,7 +76,5 @@ fn random_str() -> String {
 }
 
 fn main() -> anyhow::Result<()> {
-    //main_loop(UniqueNode { id: 0 })
-    println!("{:?}", random_str());
-    Ok(())
+    main_loop(UniqueNode { id: 0 })
 }
