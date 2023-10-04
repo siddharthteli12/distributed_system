@@ -1,0 +1,6 @@
+[workspace] 
+
+members = [
+    "challenge1",
+    "challenge2",
+]
